@@ -4,6 +4,7 @@
  */
 package com.mycompany.main;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -17,10 +18,9 @@ import javax.swing.JPanel;
  * @author Rafael
  */
 public class Frame extends JPanel {
-
-    Countires countriesData = new Countires();
-    String[][] data = countriesData.getCountries();
-    String[][] checkData = countriesData.getCountries();
+    //what an bug
+    String[][] data = new Countires().getCountries();
+    String[][] checkData = new Countires().getCountries();
     String stringCheck;
     int onClick = 0;
 
@@ -37,14 +37,18 @@ public class Frame extends JPanel {
         int j;
         for (int i = 0; i < 20; i++) {
             j = random.nextInt(20);
-            temp[0][0] = data[i][0];
-            temp[0][1] = data[i][1];
+            String temp0 = data[i][0];
+            String temp1 = data[i][1];
+            
             data[i][0] = data[j][0];
             data[i][1] = data[j][1];
             checkData[i][0] = data[j][0];
             checkData[i][1] = data[j][1];
-            data[j][0] = temp[0][0];
-            data[j][1] = temp[0][1];
+            
+            data[j][0] = temp0;
+            data[j][1] = temp1;
+            checkData[j][0] = temp0;
+            checkData[j][1] = temp1;
         }
         
         for (int i = 0; i < 10; i++) {
@@ -64,38 +68,39 @@ public class Frame extends JPanel {
 
         int num = 0;
         int numOfPair = 0;
-        int zeroORone;
-        int z;
+        int zeroORone = 0;
         for (int i = 0; i < 20; i++) {
-            z = i;
-            if (i != 0 && i % 5 == 0) {
-                num++;
-            }
-            if (i % 2 == 0) {
-                zeroORone = 0;
-                numOfPair++;
-            } else {
-                zeroORone = 1;
-            }
+            if (i != 0 && i % 5 == 0) {num++;}
+            if (i != 0 && i % 2 == 0 ) {zeroORone = 0;numOfPair++;}
+            else {if (i!=0){zeroORone = 1;}}
             JButton button = new JButton(data[numOfPair][zeroORone]);
             button.setBounds(i % 5 * 120 + 10, num * 70 + 10, 100, 50);
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    button.setBackground(Color.red);
                     onClick++;
                     if (onClick % 2 == 0) {
+                        int guessed = 0;
                         for (int i = 0; i < 10 ; i++) {
+                            System.out.println("MIXED Data " + data[i][1] + " and " + data[i][0]);}
+                        for (int i = 0; i < 10 ; i++) {
+                            System.out.println("Data " + checkData[i][1] + " and " + checkData[i][0]);
                             if (stringCheck.equals(checkData[i][0]) || stringCheck.equals(checkData[i][1])) {
-                                System.out.print(button.getText());
+                               // System.out.println("the button is" + button.getText());
+                               // System.out.println("the string is " + stringCheck);
+                              //  System.out.println("check data 1:" + checkData[i][1]);
+                              //  System.out.println("check data 0:" + checkData[i][0]);
                                 if (button.getText().equals(checkData[i][1]) || button.getText().equals(checkData[i][0])) {
                                     JOptionPane.showMessageDialog(button, "You guessed");
+                                    guessed = 1;
                                     break;
                                 }
                             }
-                        }
+                        }if(guessed==0){JOptionPane.showMessageDialog(button, "Wrong answer");}
                     } else {
                         stringCheck = button.getText();
-                        System.out.print(button.getText());
+                        //System.out.print(button.getText());
                         JOptionPane.showMessageDialog(button, "Gess the pair");
                     }
 
